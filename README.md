@@ -18,7 +18,7 @@ Clone the repository and install in editable mode:
 
 ```bash
 git clone https://github.com/nikyadav002/Valens-Project
-cd valens_project
+cd Valens-Project
 pip install -e .
 ```
 
