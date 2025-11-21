@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="valens/Logo.png" alt="Valens Logo" width="400"/>
+</p>
+
 # Valens
 
 **Valens** is a CLI-based post-processing tool for VASP outputs, designed to create publication-quality Density of States (DOS) plots with a clean, modern aesthetic.
