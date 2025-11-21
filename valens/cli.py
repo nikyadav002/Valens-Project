@@ -24,7 +24,9 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from matplotlib.patches import Polygon
 from matplotlib.ticker import AutoMinorLocator
-from pymatgen.io.vasp.outputs import Vasprun
+from pymatgen.io.vasp import Vasprun
+from valens.supercell import create_supercell
+from valens.band import generate_band_kpoints
 
 # ===============================================================
 # Gradient fill aesthetic
@@ -403,6 +405,23 @@ def main():
     dos_parser.add_argument("-o", "--output", default="valens_dos.png", help="Output filename")
     dos_parser.add_argument("--font", default="Arial", help="Font family")
 
+    # --- Supercell Subcommand ---
+    supercell_parser = subparsers.add_parser("supercell", help="Create supercell from POSCAR")
+    supercell_parser.add_argument("nx", type=int, help="Supercell size in x direction")
+    supercell_parser.add_argument("ny", type=int, help="Supercell size in y direction")
+    supercell_parser.add_argument("nz", type=int, help="Supercell size in z direction")
+    supercell_parser.add_argument("-i", "--input", default="POSCAR", help="Input POSCAR file (default: POSCAR)")
+    supercell_parser.add_argument("-o", "--output", default="POSCAR_supercell", help="Output filename (default: POSCAR_supercell)")
+
+    # --- Band Subcommand ---
+    band_parser = subparsers.add_parser("band", help="Band structure utilities")
+    band_subparsers = band_parser.add_subparsers(dest="band_command", help="Band structure commands")
+    
+    kptgen_parser = band_subparsers.add_parser("kpt-gen", help="Generate KPOINTS for band structure")
+    kptgen_parser.add_argument("-i", "--input", default="POSCAR", help="Input POSCAR file (default: POSCAR)")
+    kptgen_parser.add_argument("-n", "--npoints", type=int, default=40, help="Points per segment (default: 40)")
+    kptgen_parser.add_argument("-o", "--output", default="KPOINTS", help="Output filename (default: KPOINTS)")
+
     args = parser.parse_args()
 
     if args.command == "dos":
@@ -430,6 +449,31 @@ def main():
         except Exception as e:
             print(f"❌ Error: {e}")
             sys.exit(1)
+    elif args.command == "supercell":
+        try:
+            create_supercell(
+                poscar_path=args.input,
+                nx=args.nx,
+                ny=args.ny,
+                nz=args.nz,
+                output=args.output
+            )
+        except Exception as e:
+            print(f"❌ Error: {e}")
+            sys.exit(1)
+    elif args.command == "band":
+        if args.band_command == "kpt-gen":
+            try:
+                generate_band_kpoints(
+                    poscar_path=args.input,
+                    npoints=args.npoints,
+                    output=args.output
+                )
+            except Exception as e:
+                print(f"❌ Error: {e}")
+                sys.exit(1)
+        else:
+            band_parser.print_help()
     else:
         parser.print_help()
 

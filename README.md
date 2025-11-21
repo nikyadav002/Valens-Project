@@ -8,13 +8,19 @@
 
 ## Features
 
+### Pre-processing
+- **Supercell Creation**: Generate supercells from POSCAR files.
+- **Band KPOINTS Generation**: Automatic high-symmetry path detection for band structure calculations.
+
+### Post-processing
 - **Smart Plotting**: Automatically handles total DOS and Projected DOS (PDOS).
-- **Adaptive Legend**: Intelligently hides the legend if PDOS contributions are low, keeping the plot clean.
-- **Gradient Fill**: aesthetically pleasing gradient fills for DOS peaks.
+- **Orbital-Resolved**: Plots individual orbitals (s, p, d, f) by default.
+- **Adaptive Legend**: Intelligently hides the legend if PDOS contributions are low.
+- **Gradient Fill**: Aesthetically pleasing gradient fills for DOS peaks.
 - **Custom Fonts**: Supports Arial, Helvetica, Times New Roman.
 
 > [!NOTE]
-> Band structure plotting and other features are coming soon!
+> Band structure plotting is coming soon!
 
 ## Installation
 
@@ -39,6 +45,49 @@ pip install -e .
 ## Usage
 
 The main command is `valens`.
+
+### Create Supercell
+
+Generate a supercell from a POSCAR file:
+
+```bash
+valens supercell nx ny nz [options]
+```
+
+**Example:**
+```bash
+# Create a 2×2×2 supercell
+valens supercell 2 2 2
+
+# Specify input and output files
+valens supercell 3 3 1 -i POSCAR_primitive -o POSCAR_3x3x1
+```
+
+**Options:**
+- `-i`, `--input`: Input POSCAR file (default: `POSCAR`).
+- `-o`, `--output`: Output filename (default: `POSCAR_supercell`).
+
+### Generate Band Structure KPOINTS
+
+Automatically generate KPOINTS file with high-symmetry path:
+
+```bash
+valens band kpt-gen [options]
+```
+
+**Example:**
+```bash
+# Generate KPOINTS with default settings (40 points per segment)
+valens band kpt-gen
+
+# Specify number of points and custom filenames
+valens band kpt-gen -n 60 -i POSCAR_relaxed -o KPOINTS_band
+```
+
+**Options:**
+- `-i`, `--input`: Input POSCAR file (default: `POSCAR`).
+- `-n`, `--npoints`: Points per segment (default: `40`).
+- `-o`, `--output`: Output filename (default: `KPOINTS`).
 
 ### Plot DOS
 
