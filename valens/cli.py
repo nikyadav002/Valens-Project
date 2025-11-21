@@ -71,8 +71,9 @@ def gradient_fill(x, y, ax=None, color=None, xlim=None, **kwargs):
     rgb = mcolors.to_rgb(fill_color)
     z[:, :, :3] = rgb
     
-    # More aggressive gradient: starts from 0.5 and goes to full alpha
-    z[:, :, -1] = np.linspace(0.5, alpha, 100)[:, None]
+    # More aggressive gradient: lighter at bottom (0.2), darker at top (full alpha)
+    # Reversed order so bottom is lighter
+    z[:, :, -1] = np.linspace(alpha, 0.2, 100)[:, None]
     
     xmin, xmax, ymin, ymax = x.min(), x.max(), 0, max(y.max(), 1e-6)
 
