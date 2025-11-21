@@ -16,7 +16,6 @@ def generate_band_kpoints(poscar_path="POSCAR", npoints=40, output="KPOINTS"):
         npoints (int): Number of points per segment (default: 40).
         output (str): Output filename for KPOINTS.
     """
-    print(f"🔍 Reading structure from {poscar_path}...")
     
     if not os.path.exists(poscar_path):
         raise FileNotFoundError(f"{poscar_path} not found")
@@ -25,7 +24,6 @@ def generate_band_kpoints(poscar_path="POSCAR", npoints=40, output="KPOINTS"):
     structure = Structure.from_file(poscar_path)
     
     # Get high-symmetry path
-    print("🔬 Detecting high-symmetry points...")
     kpath = HighSymmKpath(structure)
     
     # Get the path
@@ -33,7 +31,6 @@ def generate_band_kpoints(poscar_path="POSCAR", npoints=40, output="KPOINTS"):
     kpoints = kpath.kpath["kpoints"]
     
     # Write KPOINTS file
-    print(f"📝 Generating KPOINTS file...")
     
     with open(output, 'w') as f:
         f.write("k-points for band structure\n")
@@ -54,9 +51,6 @@ def generate_band_kpoints(poscar_path="POSCAR", npoints=40, output="KPOINTS"):
                 f.write(f"  {end_coords[0]:.6f}  {end_coords[1]:.6f}  {end_coords[2]:.6f}  ! {end}\n")
                 f.write("\n")
     
-    # Print path information
-    print(f"✅ KPOINTS file created successfully!")
-    print(f"   Lattice type: {kpath.name}")
-    print(f"   Path: {' → '.join([' - '.join(seg) for seg in path])}")
-    print(f"   Points per segment: {npoints}")
-    print(f"   Output: {output}")
+    # Print success message
+    path_str = ' → '.join([' - '.join(seg) for seg in path])
+    print(f"✅ KPOINTS generated: {output} ({path_str}, {npoints} pts/seg)")

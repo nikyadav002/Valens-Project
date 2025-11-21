@@ -17,7 +17,6 @@ def create_supercell(poscar_path="POSCAR", nx=1, ny=1, nz=1, output="POSCAR_supe
         nz (int): Supercell size in z direction.
         output (str): Output filename for the supercell POSCAR.
     """
-    print(f"🔧 Reading structure from {poscar_path}...")
     
     if not os.path.exists(poscar_path):
         raise FileNotFoundError(f"{poscar_path} not found")
@@ -26,17 +25,11 @@ def create_supercell(poscar_path="POSCAR", nx=1, ny=1, nz=1, output="POSCAR_supe
     structure = Structure.from_file(poscar_path)
     
     # Create supercell
-    print(f"📐 Creating {nx}×{ny}×{nz} supercell...")
     supercell = structure.copy()
     supercell.make_supercell([nx, ny, nz])
     
     # Write output
     supercell.to(filename=output, fmt="poscar")
     
-    original_atoms = len(structure)
     supercell_atoms = len(supercell)
-    
-    print(f"✅ Supercell created successfully!")
-    print(f"   Original: {original_atoms} atoms")
-    print(f"   Supercell: {supercell_atoms} atoms ({nx}×{ny}×{nz})")
-    print(f"   Output: {output}")
+    print(f"✅ Supercell created: {output} ({supercell_atoms} atoms)")
