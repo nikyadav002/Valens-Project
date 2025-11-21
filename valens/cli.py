@@ -31,7 +31,7 @@ from valens.band import generate_band_kpoints
 # ===============================================================
 # Gradient fill aesthetic
 # ===============================================================
-def gradient_fill(x, y, ax=None, color=None, direction=1, **kwargs):
+def gradient_fill(x, y, ax=None, color=None, xlim=None, **kwargs):
     """
     Fills the area under a curve with a vertical gradient.
 
@@ -40,7 +40,7 @@ def gradient_fill(x, y, ax=None, color=None, direction=1, **kwargs):
         y (array-like): Y-axis data (DOS).
         ax (matplotlib.axes.Axes, optional): The axes to plot on. Defaults to current axes.
         color (str, optional): The base color for the gradient.
-        direction (int, optional): Direction of the gradient (unused currently).
+        xlim (tuple, optional): X-axis limits to restrict gradient fill.
         **kwargs: Additional arguments passed to ax.plot.
 
     Returns:
@@ -48,6 +48,15 @@ def gradient_fill(x, y, ax=None, color=None, direction=1, **kwargs):
     """
     if ax is None:
         ax = plt.gca()
+    
+    # Filter data to visible range if xlim provided
+    if xlim is not None:
+        mask = (x >= xlim[0]) & (x <= xlim[1])
+        x = x[mask]
+        y = y[mask]
+    
+    if len(x) == 0 or len(y) == 0:
+        return None
     
     # Plot the main line
     line, = ax.plot(x, y, color=color, lw=2, **kwargs)
@@ -57,13 +66,13 @@ def gradient_fill(x, y, ax=None, color=None, direction=1, **kwargs):
     alpha = line.get_alpha() or 1.0
     zorder = line.get_zorder()
 
-    # Create a gradient image
+    # Create a gradient image with more aggressive alpha
     z = np.empty((100, 1, 4))
     rgb = mcolors.to_rgb(fill_color)
     z[:, :, :3] = rgb
     
-    # Gradient alpha: starts from 0.3 to ensure visibility even for small peaks (e.g. CBM)
-    z[:, :, -1] = np.linspace(0.3, alpha, 100)[:, None]
+    # More aggressive gradient: starts from 0.5 and goes to full alpha
+    z[:, :, -1] = np.linspace(0.5, alpha, 100)[:, None]
     
     xmin, xmax, ymin, ymax = x.min(), x.max(), 0, max(y.max(), 1e-6)
 
@@ -331,8 +340,8 @@ def plot_dos(dos, pdos, out="valens_dos.png",
             # Remove the invisible line and plot properly
             line.remove()
             
-            # Apply gradient fill
-            gradient_fill(dos.energies, y_data, ax=ax, color=c, alpha=0.9)
+            # Apply gradient fill (only in visible range)
+            gradient_fill(dos.energies, y_data, ax=ax, color=c, alpha=0.9, xlim=xlim)
             
             # Plot the line
             new_line, = ax.plot(dos.energies, y_data, lw=1.5, color=c, label=label)
@@ -349,7 +358,7 @@ def plot_dos(dos, pdos, out="valens_dos.png",
     # Plot Total DOS
     if show_total:
         ax.plot(dos.energies, dos.total, color="k", lw=1.2, label="Total DOS")
-        gradient_fill(dos.energies, dos.total, ax=ax, color="k", alpha=0.15)
+        gradient_fill(dos.energies, dos.total, ax=ax, color="k", alpha=0.15, xlim=xlim)
     
     # Auto-scale Y-axis based on visible range if ylim not provided
     if not ylim and len(lines) > 0:
