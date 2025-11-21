@@ -194,7 +194,7 @@ def get_pdos(dos, elements=None):
 def plot_dos(dos, pdos, out="valens_dos.png",
              xlim=(-6, 6), ylim=None, figsize=(5, 4),
              dpi=400, legend_loc="auto", font="Arial",
-             show_fermi=False):
+             show_fermi=False, show_total=True):
     """
     Plots the Total and Projected DOS with the Valens visual style.
 
@@ -209,6 +209,7 @@ def plot_dos(dos, pdos, out="valens_dos.png",
         legend_loc (str): Legend location strategy.
         font (str): Font family to use.
         show_fermi (bool): Whether to draw a dashed line at the Fermi level (E=0).
+        show_total (bool): Whether to plot the Total DOS.
     """
 
     # --- Font configuration ---
@@ -248,9 +249,9 @@ def plot_dos(dos, pdos, out="valens_dos.png",
         labels.append(el)
 
     # Plot Total DOS
-    total_line, = ax.plot(dos.energies, dos.total, color="black", lw=1.4, label="Total DOS")
-    lines.append(total_line)
-    labels.append("Total DOS")
+    if show_total:
+        ax.plot(dos.energies, dos.total, color="k", lw=1.2, label="Total DOS")
+        gradient_fill(dos.energies, dos.total, ax=ax, color="k", alpha=0.15)
 
     # Axis settings
     ax.set_xlim(*xlim)
@@ -335,6 +336,7 @@ def main():
     dos_parser.add_argument("--ylim", nargs=2, type=float, help="DOS range (min max)")
     dos_parser.add_argument("--scale", type=float, default=1.0, help="Scaling factor for Y-axis (DOS density)")
     dos_parser.add_argument("--fermi", action="store_true", help="Draw a dashed line at the Fermi level (E=0)")
+    dos_parser.add_argument("--pdos", action="store_true", help="Plot only Projected DOS (hide Total DOS)")
     dos_parser.add_argument("-o", "--output", default="valens_dos.png", help="Output filename")
     dos_parser.add_argument("--font", default="Arial", help="Font family")
 
@@ -357,7 +359,7 @@ def main():
 
             plot_dos(dos_data, pdos_data, out=args.output,
                      xlim=tuple(args.xlim), ylim=tuple(args.ylim) if args.ylim else None,
-                     font=args.font, show_fermi=args.fermi)
+                     font=args.font, show_fermi=args.fermi, show_total=not args.pdos)
         except Exception as e:
             print(f"❌ Error: {e}")
             sys.exit(1)
