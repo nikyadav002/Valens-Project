@@ -51,6 +51,7 @@ valens dos --vasprun ./vasp_data/vasprun.xml
 - `--xlim`: Energy range (default: `-6 6`).
 - `--ylim`: DOS range (e.g., `--ylim 0 10`).
 - `--scale`: Scaling factor for Y-axis (e.g., `--scale 3` divides DOS by 3).
+- `--fermi`: Draw a dashed line at the Fermi level (E=0). Default is OFF.
 - `-o`, `--output`: Output filename (default: `valens_dos.png`).
 - `--font`: Font family (default: `Arial`).
 
