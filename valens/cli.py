@@ -16,6 +16,7 @@ import os
 import sys
 import argparse
 import re
+import warnings
 import numpy as np
 import matplotlib as mpl
 mpl.use("agg")
@@ -24,6 +25,10 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from matplotlib.patches import Polygon
 from matplotlib.ticker import AutoMinorLocator
+
+# Suppress pymatgen warnings
+warnings.filterwarnings("ignore", category=UserWarning, module="pymatgen")
+
 from pymatgen.io.vasp import Vasprun
 from valens.supercell import create_supercell
 from valens.band import generate_band_kpoints
