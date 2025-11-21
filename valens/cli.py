@@ -66,12 +66,10 @@ def gradient_fill(x, y, ax=None, color=None, xlim=None, **kwargs):
     rgb = mcolors.to_rgb(fill_color)
     z[:, :, :3] = rgb
     
-    # Gradient: lighter for bottom 40% (0.15-0.3), then darker towards top (0.3-0.85)
-    alpha_values = np.concatenate([
-        np.linspace(0.15, 0.3, 40),  # Bottom 40%: very light
-        np.linspace(0.3, 0.85, 60)   # Top 60%: transition to darker
-    ])
-    z[:, :, -1] = alpha_values[:, None]
+    
+    # Gradient: transparent at bottom (y=0), opaque near the curve
+    # This creates a gradient from bottom to top of the filled area
+    z[:, :, -1] = np.linspace(0.1, 0.85, 100)[:, None]
     
     xmin, xmax, ymin, ymax = x.min(), x.max(), 0, max(y.max(), 1e-6)
 
