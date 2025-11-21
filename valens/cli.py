@@ -290,6 +290,8 @@ def plot_dos(dos, pdos, out="valens_dos.png",
                 items_to_plot.append((el, orb))
 
     # Plot PDOS
+    max_visible_y = 0  # Track maximum Y value in visible range
+    
     for i, (el, orb) in enumerate(items_to_plot):
         if el not in pdos:
             continue
@@ -306,15 +308,41 @@ def plot_dos(dos, pdos, out="valens_dos.png",
             else:
                 continue
         
-        # Check if this item has significant contribution in visible range
+        # Check contribution in visible range
         visible_y = y_data[x_mask]
-        if len(visible_y) > 0 and np.max(visible_y) > 0:
+        if len(visible_y) > 0:
+            max_y = np.max(visible_y)
+            max_visible_y = max(max_visible_y, max_y)
+            
+            # Store for later threshold check
+            line, = ax.plot(dos.energies, y_data, lw=1.5, color=c, label=label, alpha=0)
+            lines.append((line, y_data, max_y, c, label))
+    
+    # Calculate threshold (10% of max visible)
+    threshold = 0.10 * max_visible_y
+    
+    # Now plot only items above threshold
+    final_lines = []
+    final_labels = []
+    for line, y_data, max_y, c, label in lines:
+        if max_y >= threshold:
+            # Remove the invisible line and plot properly
+            line.remove()
+            
             # Apply gradient fill
             gradient_fill(dos.energies, y_data, ax=ax, color=c, alpha=0.9)
             
-            line, = ax.plot(dos.energies, y_data, lw=1.5, color=c, label=label)
-            lines.append(line)
-            labels.append(label)
+            # Plot the line
+            new_line, = ax.plot(dos.energies, y_data, lw=1.5, color=c, label=label)
+            final_lines.append(new_line)
+            final_labels.append(label)
+        else:
+            # Remove the invisible line
+            line.remove()
+    
+    # Update lines and labels to final filtered versions
+    lines = final_lines
+    labels = final_labels
 
     # Plot Total DOS
     if show_total:
