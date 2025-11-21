@@ -69,7 +69,7 @@ def gradient_fill(x, y, ax=None, color=None, xlim=None, **kwargs):
     
     # Gradient: transparent at bottom (y=0), opaque near the curve
     # This creates a gradient from bottom to top of the filled area
-    z[:, :, -1] = np.linspace(0.1, 0.85, 100)[:, None]
+    z[:, :, -1] = np.linspace(0.05, 0.75, 100)[:, None]
     
     xmin, xmax, ymin, ymax = x.min(), x.max(), 0, max(y.max(), 1e-6)
 
