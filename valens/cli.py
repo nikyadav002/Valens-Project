@@ -117,7 +117,6 @@ def load_dos(vasprun, elements=None, **_):
     Returns:
         tuple: (ValensDos object, dict of PDOS data)
     """
-    print("Reading vasprun.xml...")
     
     # Handle directory input
     if os.path.isdir(vasprun):
@@ -345,10 +344,6 @@ def plot_dos(dos, pdos, out="valens_dos.png",
         else:
             # Remove the invisible line
             line.remove()
-    
-    # Update lines and labels to final filtered versions
-    lines = final_lines
-    labels = final_labels
 
     # Plot Total DOS
     if show_total:
@@ -414,14 +409,11 @@ def plot_dos(dos, pdos, out="valens_dos.png",
         )
         for text in legend.get_texts():
             text.set_fontweight("bold")
-    else:
-        print("Legend hidden (low PDOS contribution)")
 
     ax.xaxis.set_minor_locator(AutoMinorLocator(2))
     plt.tight_layout(pad=0.4)
     plt.savefig(out, dpi=dpi)
     plt.close(fig)
-    print(f"✅ DOS plot saved: {out}")
 
 
 # ===============================================================
@@ -479,7 +471,6 @@ def main():
             
             # Apply scaling
             if args.scale != 1.0:
-                print(f"Scaling DOS by {args.scale}")
                 dos_data.total /= args.scale
                 for el in pdos_data:
                     for orb in pdos_data[el]:
