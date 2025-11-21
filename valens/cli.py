@@ -233,7 +233,8 @@ def parse_element_selection(inputs):
 def plot_dos(dos, pdos, out="valens_dos.png",
              xlim=(-6, 6), ylim=None, figsize=(5, 4),
              dpi=400, legend_loc="auto", font="Arial",
-             show_fermi=False, show_total=True, plotting_config=None):
+             show_fermi=False, show_total=True, plotting_config=None,
+             legend_cutoff=0.10):
     """
     Plots the Total and Projected DOS with the Valens visual style.
 
@@ -250,6 +251,7 @@ def plot_dos(dos, pdos, out="valens_dos.png",
         show_fermi (bool): Whether to draw a dashed line at the Fermi level (E=0).
         show_total (bool): Whether to plot the Total DOS.
         plotting_config (list): List of (Element, Orbital) tuples to plot.
+        legend_cutoff (float): Threshold (as fraction) for showing items in legend (default: 0.10).
     """
 
     # --- Font configuration ---
@@ -318,8 +320,8 @@ def plot_dos(dos, pdos, out="valens_dos.png",
             line, = ax.plot(dos.energies, y_data, lw=1.5, color=c, label=label, alpha=0)
             lines.append((line, y_data, max_y, c, label))
     
-    # Calculate threshold (10% of max visible)
-    threshold = 0.10 * max_visible_y
+    # Calculate threshold (legend_cutoff of max visible)
+    threshold = legend_cutoff * max_visible_y
     
     # Now plot only items above threshold
     final_lines = []
@@ -435,6 +437,7 @@ def main():
     dos_parser.add_argument("--scale", type=float, default=1.0, help="Scaling factor for Y-axis (DOS density)")
     dos_parser.add_argument("--fermi", action="store_true", help="Draw a dashed line at the Fermi level (E=0)")
     dos_parser.add_argument("--pdos", action="store_true", help="Plot only Projected DOS (hide Total DOS)")
+    dos_parser.add_argument("--legend-cutoff", type=float, default=0.10, help="Threshold for legend visibility (default: 0.10)")
     dos_parser.add_argument("-o", "--output", default="valens_dos.png", help="Output filename")
     dos_parser.add_argument("--font", default="Arial", help="Font family")
 
@@ -478,7 +481,7 @@ def main():
             plot_dos(dos_data, pdos_data, out=args.output,
                      xlim=tuple(args.xlim), ylim=tuple(args.ylim) if args.ylim else None,
                      font=args.font, show_fermi=args.fermi, show_total=not args.pdos,
-                     plotting_config=plotting_config)
+                     plotting_config=plotting_config, legend_cutoff=args.legend_cutoff)
         except Exception as e:
             print(f"❌ Error: {e}")
             sys.exit(1)
