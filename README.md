@@ -47,7 +47,10 @@ valens dos --vasprun ./vasp_data/vasprun.xml
 ```
 
 **Options:**
-- `-e`, `--elements`: Specific elements to plot PDOS for (e.g., `-e Fe O`).
+- `-e`, `--elements`: Specific elements or orbitals to plot.
+    - Example: `-e Fe O` (Plots Total PDOS for Fe and O).
+    - Example: `-e Fe(d) O(p)` (Plots Fe d-orbital and O p-orbital).
+    - Example: `-e Fe Fe(d)` (Plots Fe Total and Fe d-orbital).
 - `--xlim`: Energy range (default: `-6 6`).
 - `--ylim`: DOS range (e.g., `--ylim 0 10`).
 - `--scale`: Scaling factor for Y-axis (e.g., `--scale 3` divides DOS by 3).

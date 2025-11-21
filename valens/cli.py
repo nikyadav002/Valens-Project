@@ -15,6 +15,7 @@ Features:
 import os
 import sys
 import argparse
+import re
 import numpy as np
 import matplotlib as mpl
 mpl.use("agg")
@@ -187,6 +188,42 @@ def get_pdos(dos, elements=None):
         pdos[el] = el_pdos
     return pdos
 
+def parse_element_selection(inputs):
+    """
+    Parses user input for elements and orbitals.
+    
+    Args:
+        inputs (list): List of strings, e.g., ["Ag", "Bi(s)", "O(p)"]
+        
+    Returns:
+        tuple: (elements_to_load, plotting_config)
+            elements_to_load (list): Elements to extract from VASP data.
+            plotting_config (list): List of (Element, Orbital) tuples.
+    """
+    if not inputs:
+        return None, None
+
+    elements_to_load = set()
+    plotting_config = []
+    
+    # Regex to match "Element" or "Element(orbital)"
+    pattern = re.compile(r"^([A-Za-z]+)(?:\(([spdf])\))?$")
+    
+    for item in inputs:
+        match = pattern.match(item)
+        if match:
+            el = match.group(1)
+            orb = match.group(2) # None if no orbital specified
+            
+            elements_to_load.add(el)
+            if orb:
+                plotting_config.append((el, orb))
+            else:
+                plotting_config.append((el, 'total'))
+        else:
+            print(f"⚠️ Warning: Could not parse '{item}'. Ignoring.")
+            
+    return list(elements_to_load), plotting_config
 
 # ===============================================================
 # Plotting with smart legend & font control (Valens theme)
@@ -194,7 +231,7 @@ def get_pdos(dos, elements=None):
 def plot_dos(dos, pdos, out="valens_dos.png",
              xlim=(-6, 6), ylim=None, figsize=(5, 4),
              dpi=400, legend_loc="auto", font="Arial",
-             show_fermi=False, show_total=True):
+             show_fermi=False, show_total=True, plotting_config=None):
     """
     Plots the Total and Projected DOS with the Valens visual style.
 
@@ -210,6 +247,7 @@ def plot_dos(dos, pdos, out="valens_dos.png",
         font (str): Font family to use.
         show_fermi (bool): Whether to draw a dashed line at the Fermi level (E=0).
         show_total (bool): Whether to plot the Total DOS.
+        plotting_config (list): List of (Element, Orbital) tuples to plot.
     """
 
     # --- Font configuration ---
@@ -236,17 +274,36 @@ def plot_dos(dos, pdos, out="valens_dos.png",
     palette = ["#4b0082", "#e63946", "#2a9d8f", "#ffb703", "#6a994e", "#8e44ad", "#118ab2"]
     lines, labels = [], []
 
-    # Plot PDOS for each element
-    for i, (el, el_pdos) in enumerate(pdos.items()):
+    # Determine what to plot
+    if plotting_config:
+        items_to_plot = plotting_config
+    else:
+        # Default: Plot total for each loaded element
+        items_to_plot = [(el, 'total') for el in pdos.keys()]
+
+    # Plot PDOS
+    for i, (el, orb) in enumerate(items_to_plot):
+        if el not in pdos:
+            continue
+            
         c = palette[i % len(palette)]
-        total_el = sum(el_pdos.values())
         
+        if orb == 'total':
+            y_data = sum(pdos[el].values())
+            label = el
+        else:
+            if orb in pdos[el]:
+                y_data = pdos[el][orb]
+                label = f"{el}({orb})"
+            else:
+                continue
+
         # Apply gradient fill
-        gradient_fill(dos.energies, total_el, ax=ax, color=c, alpha=0.9)
+        gradient_fill(dos.energies, y_data, ax=ax, color=c, alpha=0.9)
         
-        line, = ax.plot(dos.energies, total_el, lw=1.5, color=c, label=el)
+        line, = ax.plot(dos.energies, y_data, lw=1.5, color=c, label=label)
         lines.append(line)
-        labels.append(el)
+        labels.append(label)
 
     # Plot Total DOS
     if show_total:
@@ -271,9 +328,12 @@ def plot_dos(dos, pdos, out="valens_dos.png",
     
     if ylim:
         y_threshold = 0.10 * ylim[1]
-        for el_pdos in pdos.values():
-            total_el = sum(el_pdos.values())[x_mask]
-            if np.max(total_el) >= y_threshold:
+        # Check max of plotted lines in visible range
+        for line in lines:
+            y_data = line.get_ydata()
+            # We need to match x_data to mask, but lines share x with dos.energies
+            visible_y = y_data[x_mask]
+            if np.max(visible_y) >= y_threshold:
                 show_legend = True
                 break
     else:
@@ -347,7 +407,10 @@ def main():
             # Determine input path: --vasprun > positional > current dir
             target_path = args.vasprun or args.filepath or "."
             
-            dos_data, pdos_data = load_dos(target_path, elements=args.elements)
+            # Parse elements and orbitals
+            elements_to_load, plotting_config = parse_element_selection(args.elements)
+            
+            dos_data, pdos_data = load_dos(target_path, elements=elements_to_load)
             
             # Apply scaling
             if args.scale != 1.0:
@@ -359,7 +422,8 @@ def main():
 
             plot_dos(dos_data, pdos_data, out=args.output,
                      xlim=tuple(args.xlim), ylim=tuple(args.ylim) if args.ylim else None,
-                     font=args.font, show_fermi=args.fermi, show_total=not args.pdos)
+                     font=args.font, show_fermi=args.fermi, show_total=not args.pdos,
+                     plotting_config=plotting_config)
         except Exception as e:
             print(f"❌ Error: {e}")
             sys.exit(1)
