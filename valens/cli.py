@@ -278,8 +278,11 @@ def plot_dos(dos, pdos, out="valens_dos.png",
     if plotting_config:
         items_to_plot = plotting_config
     else:
-        # Default: Plot total for each loaded element
-        items_to_plot = [(el, 'total') for el in pdos.keys()]
+        # Default: Plot all orbitals for each loaded element
+        items_to_plot = []
+        for el, el_pdos in pdos.items():
+            for orb in el_pdos.keys():
+                items_to_plot.append((el, orb))
 
     # Plot PDOS
     for i, (el, orb) in enumerate(items_to_plot):

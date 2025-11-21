@@ -22,6 +22,16 @@ cd Valens-Project
 pip install -e .
 ```
 
+## Updating Valens
+
+To update to the latest version:
+
+```bash
+cd Valens-Project
+git pull
+pip install -e .
+```
+
 ## Usage
 
 The main command is `valens`.
@@ -36,14 +46,17 @@ You can provide the path as a positional argument, use the `--vasprun` flag, or 
 
 **Examples:**
 ```bash
-# Use current directory
+# Plot all orbitals for all elements (Default)
 valens dos
 
-# Use positional argument
-valens dos ./vasp_data
+# Plot specific elements (Total PDOS)
+valens dos -e Fe O
 
-# Use flag
-valens dos --vasprun ./vasp_data/vasprun.xml
+# Plot specific orbitals
+valens dos -e "Fe(d)" "O(p)"
+
+# Plot mixed (Fe Total and Fe d-orbital)
+valens dos -e Fe "Fe(d)"
 ```
 
 **Options:**
