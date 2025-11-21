@@ -10,6 +10,7 @@ from pymatgen.symmetry.bandstructure import HighSymmKpath
 def generate_band_kpoints(poscar_path="POSCAR", npoints=40, output="KPOINTS"):
     """
     Generates KPOINTS file in line-mode for band structure calculations.
+    Uses SeeK-path method for high-symmetry path determination.
     
     Args:
         poscar_path (str): Path to input POSCAR file.
@@ -23,15 +24,14 @@ def generate_band_kpoints(poscar_path="POSCAR", npoints=40, output="KPOINTS"):
     # Read structure
     structure = Structure.from_file(poscar_path)
     
-    # Get high-symmetry path
-    kpath = HighSymmKpath(structure)
+    # Get high-symmetry path using SeeK-path method
+    kpath = HighSymmKpath(structure, path_type="setyawan_curtarolo")
     
     # Get the path
     path = kpath.kpath["path"]
     kpoints = kpath.kpath["kpoints"]
     
     # Write KPOINTS file
-    
     with open(output, 'w') as f:
         f.write("k-points for band structure\n")
         f.write(f"{npoints}\n")
