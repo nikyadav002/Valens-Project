@@ -344,6 +344,10 @@ def plot_dos(dos, pdos, out="valens_dos.png",
         else:
             # Remove the invisible line
             line.remove()
+    
+    # Update lines and labels to final filtered versions
+    lines = final_lines
+    labels = final_labels
 
     # Plot Total DOS
     if show_total:
