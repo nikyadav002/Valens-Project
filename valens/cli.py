@@ -275,6 +275,9 @@ def plot_dos(dos, pdos, out="valens_dos.png",
     # Color palette for elements
     palette = ["#4b0082", "#e63946", "#2a9d8f", "#ffb703", "#6a994e", "#8e44ad", "#118ab2"]
     lines, labels = [], []
+    
+    # Determine mask for visible x-range (used for scaling and legend)
+    x_mask = (dos.energies >= xlim[0]) & (dos.energies <= xlim[1])
 
     # Determine what to plot
     if plotting_config:
@@ -302,18 +305,38 @@ def plot_dos(dos, pdos, out="valens_dos.png",
                 label = f"{el}({orb})"
             else:
                 continue
-
-        # Apply gradient fill
-        gradient_fill(dos.energies, y_data, ax=ax, color=c, alpha=0.9)
         
-        line, = ax.plot(dos.energies, y_data, lw=1.5, color=c, label=label)
-        lines.append(line)
-        labels.append(label)
+        # Check if this item has significant contribution in visible range
+        visible_y = y_data[x_mask]
+        if len(visible_y) > 0 and np.max(visible_y) > 0:
+            # Apply gradient fill
+            gradient_fill(dos.energies, y_data, ax=ax, color=c, alpha=0.9)
+            
+            line, = ax.plot(dos.energies, y_data, lw=1.5, color=c, label=label)
+            lines.append(line)
+            labels.append(label)
 
     # Plot Total DOS
     if show_total:
         ax.plot(dos.energies, dos.total, color="k", lw=1.2, label="Total DOS")
         gradient_fill(dos.energies, dos.total, ax=ax, color="k", alpha=0.15)
+    
+    # Auto-scale Y-axis based on visible range if ylim not provided
+    if not ylim and len(lines) > 0:
+        max_y_in_range = 0
+        for line in lines:
+            y_data = line.get_ydata()
+            visible_y = y_data[x_mask]
+            if len(visible_y) > 0:
+                max_y_in_range = max(max_y_in_range, np.max(visible_y))
+        
+        if show_total:
+            visible_total = dos.total[x_mask]
+            if len(visible_total) > 0:
+                max_y_in_range = max(max_y_in_range, np.max(visible_total))
+        
+        if max_y_in_range > 0:
+            ax.set_ylim(0, max_y_in_range * 1.1)  # Add 10% padding
 
     # Axis settings
     ax.set_xlim(*xlim)
@@ -325,26 +348,8 @@ def plot_dos(dos, pdos, out="valens_dos.png",
     ax.set_yticks([])
 
     # --- Smart legend visibility ---
-    # Only show legend if PDOS peaks are significant enough in the visible range
-    show_legend = False
-    
-    # Determine mask for visible x-range
-    x_mask = (dos.energies >= xlim[0]) & (dos.energies <= xlim[1])
-    
-    if ylim:
-        y_threshold = 0.10 * ylim[1]
-        # Check max of plotted lines in visible range
-        for line in lines:
-            y_data = line.get_ydata()
-            # We need to match x_data to mask, but lines share x with dos.energies
-            visible_y = y_data[x_mask]
-            if np.max(visible_y) >= y_threshold:
-                show_legend = True
-                break
-    else:
-        # If no ylim provided, default to showing legend if there is data
-        if np.any(x_mask):
-             show_legend = True
+    # Only show legend if there are items to display
+    show_legend = len(lines) > 0
 
     if show_legend:
         # Check for overlap to decide legend position
