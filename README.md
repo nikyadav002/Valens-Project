@@ -29,7 +29,21 @@ The main command is `valens`.
 ### Plot DOS
 
 ```bash
-valens dos /path/to/vasprun.xml [options]
+valens dos [path/to/vasprun.xml] [options]
+```
+
+You can provide the path as a positional argument, use the `--vasprun` flag, or omit it to use the current directory.
+
+**Examples:**
+```bash
+# Use current directory
+valens dos
+
+# Use positional argument
+valens dos ./vasp_data
+
+# Use flag
+valens dos --vasprun ./vasp_data/vasprun.xml
 ```
 
 **Options:**

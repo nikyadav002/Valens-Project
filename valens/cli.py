@@ -325,7 +325,8 @@ def main():
 
     # --- DOS Subcommand ---
     dos_parser = subparsers.add_parser("dos", help="Plot Density of States (DOS)")
-    dos_parser.add_argument("vasprun", nargs="?", default=".", help="Path to vasprun.xml or directory containing it")
+    dos_parser.add_argument("filepath", nargs="?", help="Path to vasprun.xml or directory containing it (optional)")
+    dos_parser.add_argument("--vasprun", help="Explicit path to vasprun.xml (alternative to positional argument)")
     dos_parser.add_argument("-e", "--elements", nargs="+", help="Specific elements to plot PDOS for")
     dos_parser.add_argument("--xlim", nargs=2, type=float, default=[-6, 6], help="Energy range (min max)")
     dos_parser.add_argument("--ylim", nargs=2, type=float, help="DOS range (min max)")
@@ -337,7 +338,10 @@ def main():
 
     if args.command == "dos":
         try:
-            dos_data, pdos_data = load_dos(args.vasprun, elements=args.elements)
+            # Determine input path: --vasprun > positional > current dir
+            target_path = args.vasprun or args.filepath or "."
+            
+            dos_data, pdos_data = load_dos(target_path, elements=args.elements)
             
             # Apply scaling
             if args.scale != 1.0:
