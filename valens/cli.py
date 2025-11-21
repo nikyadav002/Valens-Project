@@ -49,12 +49,7 @@ def gradient_fill(x, y, ax=None, color=None, xlim=None, **kwargs):
     if ax is None:
         ax = plt.gca()
     
-    # Filter data to visible range if xlim provided
-    if xlim is not None:
-        mask = (x >= xlim[0]) & (x <= xlim[1])
-        x = x[mask]
-        y = y[mask]
-    
+    # Don't filter by xlim - use full data range for better appearance
     if len(x) == 0 or len(y) == 0:
         return None
     
@@ -71,9 +66,8 @@ def gradient_fill(x, y, ax=None, color=None, xlim=None, **kwargs):
     rgb = mcolors.to_rgb(fill_color)
     z[:, :, :3] = rgb
     
-    # More aggressive gradient: lighter at bottom (0.2), darker at top (full alpha)
-    # Reversed order so bottom is lighter
-    z[:, :, -1] = np.linspace(alpha, 0.2, 100)[:, None]
+    # Aggressive gradient: darker at bottom (0.8), lighter at top (0.2)
+    z[:, :, -1] = np.linspace(0.2, 0.8, 100)[:, None]
     
     xmin, xmax, ymin, ymax = x.min(), x.max(), 0, max(y.max(), 1e-6)
 
@@ -341,8 +335,8 @@ def plot_dos(dos, pdos, out="valens_dos.png",
             # Remove the invisible line and plot properly
             line.remove()
             
-            # Apply gradient fill (only in visible range)
-            gradient_fill(dos.energies, y_data, ax=ax, color=c, alpha=0.9, xlim=xlim)
+            # Apply gradient fill
+            gradient_fill(dos.energies, y_data, ax=ax, color=c, alpha=0.9)
             
             # Plot the line
             new_line, = ax.plot(dos.energies, y_data, lw=1.5, color=c, label=label)
@@ -359,7 +353,7 @@ def plot_dos(dos, pdos, out="valens_dos.png",
     # Plot Total DOS
     if show_total:
         ax.plot(dos.energies, dos.total, color="k", lw=1.2, label="Total DOS")
-        gradient_fill(dos.energies, dos.total, ax=ax, color="k", alpha=0.15, xlim=xlim)
+        gradient_fill(dos.energies, dos.total, ax=ax, color="k", alpha=0.15)
     
     # Auto-scale Y-axis based on visible range if ylim not provided
     if not ylim and len(lines) > 0:
