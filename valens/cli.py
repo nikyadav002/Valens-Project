@@ -378,7 +378,13 @@ def plot_dos(dos, pdos, out="valens_dos.png",
         ax.set_ylim(*ylim)
     ax.set_xlabel("Energy (eV)", fontsize=12, weight="bold", labelpad=6)
     ax.set_ylabel("Density of States", fontsize=12, weight="bold", labelpad=6)
-    ax.set_xticks(np.linspace(xlim[0], xlim[1], 5))
+    
+    # Set x-ticks to include 0
+    xticks = np.linspace(xlim[0], xlim[1], 5)
+    if 0 >= xlim[0] and 0 <= xlim[1] and 0 not in xticks:
+        # Insert 0 if it's in range but not in ticks
+        xticks = np.sort(np.append(xticks, 0))
+    ax.set_xticks(xticks)
     ax.set_yticks([])
 
     # --- Smart legend visibility ---
@@ -402,7 +408,7 @@ def plot_dos(dos, pdos, out="valens_dos.png",
         legend = ax.legend(
             lines, labels,
             frameon=False,
-            fontsize=10,
+            fontsize=11,
             loc=loc,
             ncol=ncol,
             handlelength=1.5,
