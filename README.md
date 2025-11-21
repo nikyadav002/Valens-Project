@@ -4,7 +4,7 @@
 
 # Valens
 
-**Valens** is a CLI-based post-processing tool for VASP outputs, designed to create publication-quality Density of States (DOS) plots with a clean, modern aesthetic.
+**Valens** is a comprehensive CLI tool for VASP workflows, providing both pre-processing and post-processing capabilities with a focus on clean, publication-quality outputs and modern aesthetics.
 
 ## Features
 
