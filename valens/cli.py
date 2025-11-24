@@ -253,6 +253,7 @@ def parse_element_selection(inputs):
         else:
             print(f"⚠️ Warning: Could not parse '{item}'. Ignoring.")
             
+```
     return list(elements_to_load), plotting_config
 
 # ===============================================================
@@ -507,7 +508,7 @@ def main():
     band_parser.add_argument("--vasprun", help="Explicit path to vasprun.xml")
     band_parser.add_argument("--kpoints", help="Path to KPOINTS file (for labels)")
     band_parser.add_argument("--ylim", nargs=2, type=float, help="Energy range (min max)")
-    band_parser.add_argument("-o", "--output", default="band_structure.png", help="Output filename")
+    band_parser.add_argument("-o", "--output", default="valens_band.png", help="Output filename")
     band_parser.add_argument("--font", default="Arial", help="Font family")
 
     band_subparsers = band_parser.add_subparsers(dest="band_command", help="Band structure commands")

@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 from pymatgen.io.vasp import Vasprun, BSVasprun
 from pymatgen.electronic_structure.plotter import BSPlotter
 
-def plot_band_structure(vasprun_path, kpoints_path=None, output="band_structure.png",
-                        ylim=None, figsize=(6, 5), dpi=400, font="Arial"):
+def plot_band_structure(vasprun_path, kpoints_path=None, output="valens_band.png",
+                        ylim=None, figsize=(6, 10), dpi=400, font="Arial"):
     """
     Plots the electronic band structure from vasprun.xml.
     
