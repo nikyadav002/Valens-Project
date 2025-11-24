@@ -584,8 +584,9 @@ def main():
                     ylim=tuple(args.ylim) if args.ylim else None,
                     font=args.font
                 )
-            except Exception as e:
-                print(f"❌ Error: {e}")
+            except Exception:
+                import traceback
+                traceback.print_exc()
                 sys.exit(1)
         else:
             band_parser.print_help()
