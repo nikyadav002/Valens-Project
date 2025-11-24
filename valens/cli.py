@@ -137,7 +137,24 @@ def load_dos(vasprun, elements=None, **_):
     dos = vr.complete_dos
     efermi = getattr(dos, "efermi", vr.efermi)
     
-    # Shift energies to set Fermi level at 0
+    # Determine reference energy
+    # For insulators/semiconductors, align VBM to 0 eV
+    # For metals, align Fermi level to 0 eV
+    try:
+        # Try using BandStructure first (more robust)
+        bs = vr.get_band_structure()
+        if not bs.is_metal():
+            efermi = bs.get_vbm()["energy"]
+    except Exception:
+        # Fallback to DOS-based detection
+        try:
+            cbm, vbm = dos.get_cbm_vbm()
+            if cbm - vbm > 0.01:  # Band gap detected
+                efermi = vbm
+        except Exception:
+            pass
+    
+    # Shift energies to set reference at 0
     energies = dos.energies - efermi
 
     # Calculate total DOS (sum of spins)
