@@ -46,6 +46,9 @@ pip install -e .
 
 The main command is `valens`.
 
+<details>
+<summary><strong>Click to view detailed usage instructions</strong></summary>
+
 ### Create Supercell
 
 Generate a supercell from a POSCAR file:
@@ -99,7 +102,7 @@ valens band [options]
 - `--vasprun`: Path to `vasprun.xml` (default: current directory).
 - `--kpoints`: Path to `KPOINTS` file for path labels (default: looks for `KPOINTS` in same dir).
 - `--ylim`: Energy range, e.g., `--ylim -4 4`.
-- `-o, --output`: Output filename (default: `band_structure.png`).
+- `-o, --output`: Output filename (default: `valens_band.png`).
 
 **Example:**
 ```bash
@@ -148,3 +151,5 @@ valens dos -e Fe "Fe(d)"
 ```bash
 valens dos ./vasp_data --xlim -5 5 -o my_dos.png
 ```
+
+</details>
