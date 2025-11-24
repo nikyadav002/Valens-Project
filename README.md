@@ -37,8 +37,8 @@ pip install -e .
 ## Examples
 
 <p align="center">
-  <img src="valens/valens_dos.png" alt="DOS Plot Example" width="48%"/>
-  <img src="valens/valens_band.png" alt="Band Structure Example" width="45%"/>
+  <img src="valens/valens_dos.png" alt="DOS Plot Example" width="47%"/>
+  <img src="valens/valens_band.png" alt="Band Structure Example" width="38%"/>
 </p>
 
 ## Updating Valens
