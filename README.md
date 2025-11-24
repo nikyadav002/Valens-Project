@@ -13,14 +13,16 @@
 - **Band KPOINTS Generation**: Automatic high-symmetry path detection for band structure calculations.
 
 ### Post-processing
-- **Smart Plotting**: Automatically handles total DOS and Projected DOS (PDOS).
-- **Orbital-Resolved**: Plots individual orbitals (s, p, d, f) by default.
-- **Adaptive Legend**: Intelligently hides the legend if PDOS contributions are low.
-- **Gradient Fill**: Aesthetically pleasing gradient fills for DOS peaks.
-- **Custom Fonts**: Supports Arial, Helvetica, Times New Roman.
-
-> [!NOTE]
-> Band structure plotting is coming soon!
+- **DOS Plotting**: 
+  - Smart Plotting: Automatically handles total DOS and Projected DOS (PDOS).
+  - Orbital-Resolved: Plots individual orbitals (s, p, d, f) by default.
+  - Adaptive Legend: Intelligently hides the legend if PDOS contributions are low.
+  - Gradient Fill: Aesthetically pleasing gradient fills for DOS peaks.
+- **Band Structure Plotting**:
+  - VBM alignment to 0 eV.
+  - Color-coded bands (Purple for VB, Teal for CB).
+  - High-symmetry path labels from KPOINTS.
+- **Publication Quality**: Clean aesthetics, custom fonts (Arial, Helvetica, Times New Roman), high DPI output.
 
 ## Installation
 
