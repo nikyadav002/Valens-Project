@@ -429,6 +429,7 @@ def plot_dos(dos, pdos, out="valens_dos.png",
     # Set x-ticks with 1 eV spacing
     xticks = np.arange(np.ceil(xlim[0]), np.floor(xlim[1]) + 1, 1)
     ax.set_xticks(xticks)
+    ax.set_xticklabels(ax.get_xticks(), fontweight="bold")
     ax.set_yticks([])
 
     # --- Smart legend visibility ---
