@@ -67,27 +67,44 @@ valens supercell 3 3 1 -i POSCAR_primitive -o POSCAR_3x3x1
 - `-i`, `--input`: Input POSCAR file (default: `POSCAR`).
 - `-o`, `--output`: Output filename (default: `POSCAR_supercell`).
 
-### Generate Band Structure KPOINTS
+### Band Structure
 
-Automatically generate KPOINTS file with high-symmetry path:
+**1. Generate KPOINTS**
+
+Automatically generate a KPOINTS file with high-symmetry paths for band structure calculations.
 
 ```bash
 valens band kpt-gen [options]
-```
-
-**Example:**
-```bash
-# Generate KPOINTS with default settings (40 points per segment)
-valens band kpt-gen
-
-# Specify number of points and custom filenames
-valens band kpt-gen -n 60 -i POSCAR_relaxed -o KPOINTS_band
 ```
 
 **Options:**
 - `-i`, `--input`: Input POSCAR file (default: `POSCAR`).
 - `-n`, `--npoints`: Points per segment (default: `40`).
 - `-o`, `--output`: Output filename (default: `KPOINTS`).
+
+**Example:**
+```bash
+valens band kpt-gen -n 60 -i POSCAR_relaxed -o KPOINTS_band
+```
+
+**2. Plot Band Structure**
+
+Plot the electronic band structure from `vasprun.xml`.
+
+```bash
+valens band plot [options]
+```
+
+**Options:**
+- `--vasprun`: Path to `vasprun.xml` (default: current directory).
+- `--kpoints`: Path to `KPOINTS` file for path labels (default: looks for `KPOINTS` in same dir).
+- `--ylim`: Energy range, e.g., `--ylim -4 4`.
+- `-o, --output`: Output filename (default: `band_structure.png`).
+
+**Example:**
+```bash
+valens band plot --ylim -3 3 -o my_bands.png
+```
 
 ### Plot DOS
 

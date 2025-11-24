@@ -32,6 +32,7 @@ warnings.filterwarnings("ignore", category=UserWarning, module="pymatgen")
 from pymatgen.io.vasp import Vasprun
 from valens.supercell import create_supercell
 from valens.band import generate_band_kpoints
+from valens.band_plot import plot_band_structure
 
 # ===============================================================
 # Gradient fill aesthetic
@@ -507,6 +508,15 @@ def main():
     kptgen_parser.add_argument("-n", "--npoints", type=int, default=40, help="Points per segment (default: 40)")
     kptgen_parser.add_argument("-o", "--output", default="KPOINTS", help="Output filename (default: KPOINTS)")
 
+    # --- Band Plot Subcommand ---
+    band_plot_parser = band_subparsers.add_parser("plot", help="Plot electronic band structure")
+    band_plot_parser.add_argument("filepath", nargs="?", help="Path to vasprun.xml or directory (optional)")
+    band_plot_parser.add_argument("--vasprun", help="Explicit path to vasprun.xml")
+    band_plot_parser.add_argument("--kpoints", help="Path to KPOINTS file (for labels)")
+    band_plot_parser.add_argument("--ylim", nargs=2, type=float, help="Energy range (min max)")
+    band_plot_parser.add_argument("-o", "--output", default="band_structure.png", help="Output filename")
+    band_plot_parser.add_argument("--font", default="Arial", help="Font family")
+
     args = parser.parse_args()
 
     if args.command == "dos":
@@ -546,6 +556,32 @@ def main():
                     poscar_path=args.input,
                     npoints=args.npoints,
                     output=args.output
+                )
+            except Exception as e:
+                print(f"❌ Error: {e}")
+                sys.exit(1)
+        elif args.band_command == "plot":
+            try:
+                # Determine input path: --vasprun > positional > current dir
+                target_path = args.vasprun or args.filepath or "."
+                if os.path.isdir(target_path):
+                    target_path = os.path.join(target_path, "vasprun.xml")
+                
+                # Determine KPOINTS path
+                kpoints_path = args.kpoints
+                if not kpoints_path:
+                    # Try to find KPOINTS in the same directory as vasprun.xml
+                    base_dir = os.path.dirname(target_path)
+                    potential_kpoints = os.path.join(base_dir, "KPOINTS")
+                    if os.path.exists(potential_kpoints):
+                        kpoints_path = potential_kpoints
+
+                plot_band_structure(
+                    vasprun_path=target_path,
+                    kpoints_path=kpoints_path,
+                    output=args.output,
+                    ylim=tuple(args.ylim) if args.ylim else None,
+                    font=args.font
                 )
             except Exception as e:
                 print(f"❌ Error: {e}")
