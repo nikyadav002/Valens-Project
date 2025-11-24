@@ -111,9 +111,13 @@ def plot_band_structure(vasprun_path, kpoints_path=None, output="valens_band.png
     ax.set_ylabel("Energy (eV)", fontsize=16, fontweight="bold", labelpad=8)
     if ylim:
         ax.set_ylim(ylim)
+        # Set y-ticks with 1 eV spacing
+        yticks = np.arange(np.ceil(ylim[0]), np.floor(ylim[1]) + 1, 1)
+        ax.set_yticks(yticks)
     else:
         # Default zoom around gap
         ax.set_ylim(-4, 4)
+        ax.set_yticks(np.arange(-4, 5, 1))
         
     ax.set_xlim(distances[0][0], distances[-1][-1])
 
