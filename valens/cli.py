@@ -261,7 +261,7 @@ def plot_dos(dos, pdos, out="valens_dos.png",
              xlim=(-6, 6), ylim=None, figsize=(5, 4),
              dpi=400, legend_loc="auto", font="Arial",
              show_fermi=False, show_total=True, plotting_config=None,
-             legend_cutoff=0.10):
+             legend_cutoff=0.10, scale_factor=1.0):
     """
     Plots the Total and Projected DOS with the Valens visual style.
 
@@ -279,6 +279,7 @@ def plot_dos(dos, pdos, out="valens_dos.png",
         show_total (bool): Whether to plot the Total DOS.
         plotting_config (list): List of (Element, Orbital) tuples to plot.
         legend_cutoff (float): Threshold (as fraction) for showing items in legend (default: 0.10).
+        scale_factor (float): Factor to scale the Y-axis limits (zoom in).
     """
 
     # --- Font configuration ---
@@ -393,7 +394,9 @@ def plot_dos(dos, pdos, out="valens_dos.png",
                 max_y_in_range = max(max_y_in_range, np.max(visible_total))
         
         if max_y_in_range > 0:
-            ax.set_ylim(0, max_y_in_range * 1.1)  # Add 10% padding
+            # Apply scaling factor to the limit (zoom in)
+            limit = (max_y_in_range * 1.1) / scale_factor
+            ax.set_ylim(0, limit)
 
     # Axis settings
     ax.set_xlim(*xlim)
@@ -497,17 +500,11 @@ def main():
             
             dos_data, pdos_data = load_dos(target_path, elements=elements_to_load)
             
-            # Apply scaling
-            if args.scale != 1.0:
-                dos_data.total /= args.scale
-                for el in pdos_data:
-                    for orb in pdos_data[el]:
-                        pdos_data[el][orb] /= args.scale
-
             plot_dos(dos_data, pdos_data, out=args.output,
                      xlim=tuple(args.xlim), ylim=tuple(args.ylim) if args.ylim else None,
                      font=args.font, show_fermi=args.fermi, show_total=not args.pdos,
-                     plotting_config=plotting_config, legend_cutoff=args.legend_cutoff)
+                     plotting_config=plotting_config, legend_cutoff=args.legend_cutoff,
+                     scale_factor=args.scale)
         except Exception as e:
             print(f"❌ Error: {e}")
             sys.exit(1)
