@@ -304,10 +304,26 @@ def plot_dos(dos, pdos, out="valens_dos.png",
 
     # Color palette for elements
     # Expanded color palette for better distinction
+    # Reordered to maximize contrast between consecutive items
     palette = [
-        "#4b0082", "#e63946", "#2a9d8f", "#ffb703", "#6a994e", "#8e44ad", 
-        "#118ab2", "#d62828", "#f4a261", "#003049", "#023e8a", "#0077b6",
-        "#0096c7", "#00b4d8", "#48cae4", "#90e0ef", "#ade8f4", "#caf0f8"
+        "#4b0082", # Indigo
+        "#e63946", # Red
+        "#2a9d8f", # Teal
+        "#ffb703", # Yellow
+        "#0077b6", # Blue
+        "#8e44ad", # Purple
+        "#d62828", # Dark Red
+        "#118ab2", # Light Blue
+        "#f4a261", # Orange
+        "#003049", # Dark Blue
+        "#6a994e", # Green
+        "#023e8a", # Royal Blue
+        "#0096c7", # Cyan
+        "#00b4d8", # Sky Blue
+        "#48cae4", # Light Cyan
+        "#90e0ef", # Pale Blue
+        "#ade8f4", # Very Pale Blue
+        "#caf0f8"  # White Blue
     ]
     lines, labels = [], []
     
