@@ -351,26 +351,24 @@ def plot_dos(dos, pdos, out="valens_dos.png",
     # Calculate threshold (legend_cutoff of max visible)
     threshold = legend_cutoff * max_visible_y
     
-    # Now plot only items above threshold
+    # Filter legend items but keep all plot lines
     final_lines = []
     final_labels = []
-    for line, y_data, max_y, c, label in lines:
-        if max_y >= threshold:
-            # Remove the invisible line and plot properly
-            line.remove()
-            
-            # Apply gradient fill
-            gradient_fill(dos.energies, y_data, ax=ax, color=c, alpha=0.9)
-            
-            # Plot the line
-            new_line, = ax.plot(dos.energies, y_data, lw=1.5, color=c, label=label)
-            final_lines.append(new_line)
-            final_labels.append(label)
-        else:
-            # Remove the invisible line
-            line.remove()
     
-    # Update lines and labels to final filtered versions
+    for line, y_data, max_y, c, label in lines:
+        # Always plot the line (make it visible)
+        line.set_alpha(1.0)
+        
+        # Apply gradient fill if significant enough (optional, but looks better)
+        if max_y >= threshold * 0.5:  # Lower threshold for gradient
+             gradient_fill(dos.energies, y_data, ax=ax, color=c, alpha=0.9)
+        
+        # Only add to legend if above main threshold
+        if max_y >= threshold:
+            final_lines.append(line)
+            final_labels.append(label)
+    
+    # Update lines and labels for legend creation
     lines = final_lines
     labels = final_labels
 
