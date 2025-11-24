@@ -295,7 +295,7 @@ def plot_dos(dos, pdos, out="valens_dos.png",
     mpl.rcParams["font.family"] = font
     mpl.rcParams["axes.linewidth"] = 1.4
     mpl.rcParams["font.weight"] = "bold"
-    mpl.rcParams["font.size"] = 10
+    mpl.rcParams["font.size"] = 12
 
     plt.style.use("default")
     fig, ax = plt.subplots(figsize=figsize)
@@ -423,8 +423,8 @@ def plot_dos(dos, pdos, out="valens_dos.png",
     ax.set_xlim(*xlim)
     if ylim:
         ax.set_ylim(*ylim)
-    ax.set_xlabel("Energy (eV)", fontsize=12, weight="bold", labelpad=6)
-    ax.set_ylabel("Density of States", fontsize=12, weight="bold", labelpad=6)
+    ax.set_xlabel("Energy (eV)", fontsize=14, weight="bold", labelpad=6)
+    ax.set_ylabel("Density of States", fontsize=14, weight="bold", labelpad=6)
     
     # Set x-ticks with 1 eV spacing
     xticks = np.arange(np.ceil(xlim[0]), np.floor(xlim[1]) + 1, 1)
@@ -452,7 +452,7 @@ def plot_dos(dos, pdos, out="valens_dos.png",
         legend = ax.legend(
             lines, labels,
             frameon=False,
-            fontsize=11,
+            fontsize=13,
             loc=loc,
             ncol=ncol,
             handlelength=1.5,

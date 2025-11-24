@@ -33,7 +33,7 @@ def plot_band_structure(vasprun_path, kpoints_path=None, output="valens_band.png
     mpl.rcParams["font.family"] = font
     mpl.rcParams["axes.linewidth"] = 1.4
     mpl.rcParams["font.weight"] = "bold"
-    mpl.rcParams["font.size"] = 12
+    mpl.rcParams["font.size"] = 14
     mpl.rcParams["xtick.major.width"] = 1.2
     mpl.rcParams["ytick.major.width"] = 1.2
 
@@ -98,7 +98,7 @@ def plot_band_structure(vasprun_path, kpoints_path=None, output="valens_band.png
     ax.set_xticks(ticks['distance'])
     # Clean up labels (remove formatting like $ if needed, but pymatgen usually does a good job)
     clean_labels = [l.replace("$\\mid$", "|") for l in ticks['label']]
-    ax.set_xticklabels(clean_labels, fontsize=12, fontweight="bold")
+    ax.set_xticklabels(clean_labels, fontsize=14, fontweight="bold")
     
     # Draw vertical lines at high-symmetry points
     for d in ticks['distance']:
@@ -108,7 +108,7 @@ def plot_band_structure(vasprun_path, kpoints_path=None, output="valens_band.png
     ax.axhline(0, color="k", lw=0.8, ls="--", alpha=0.5)
 
     # Setup Y-axis
-    ax.set_ylabel("Energy (eV)", fontsize=14, fontweight="bold", labelpad=8)
+    ax.set_ylabel("Energy (eV)", fontsize=16, fontweight="bold", labelpad=8)
     if ylim:
         ax.set_ylim(ylim)
     else:
