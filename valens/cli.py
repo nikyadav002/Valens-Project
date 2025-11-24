@@ -253,7 +253,7 @@ def parse_element_selection(inputs):
         else:
             print(f"⚠️ Warning: Could not parse '{item}'. Ignoring.")
             
-```
+
     return list(elements_to_load), plotting_config
 
 # ===============================================================
