@@ -37,7 +37,7 @@ def plot_band_structure(vasprun_path, kpoints_path=None, output="band_structure.
     mpl.rcParams["xtick.major.width"] = 1.2
     mpl.rcParams["ytick.major.width"] = 1.2
 
-    print(f"🔍 Reading {vasprun_path} ...")
+    # print(f"🔍 Reading {vasprun_path} ...") # Silent mode
     
     try:
         # Load VASP output
@@ -53,9 +53,8 @@ def plot_band_structure(vasprun_path, kpoints_path=None, output="band_structure.
     
     # Extract data
     distances = data['distances'] # List of lists (one per segment)
-    energies = data['energy']     # List of dicts (one per segment), keys are '1' (up) and '-1' (down)
+    energies = data['energy']     # Can be list of dicts OR dict of lists depending on pymatgen version/structure
     ticks = data['ticks']         # Dict with 'distance' and 'label'
-    vbm = data['vbm']             # VBM energy (should be 0 after zero_to_efermi=True)
     
     # Setup plot
     fig, ax = plt.subplots(figsize=figsize)
@@ -69,18 +68,31 @@ def plot_band_structure(vasprun_path, kpoints_path=None, output="band_structure.
     for i in range(len(distances)):
         d = distances[i]
         
-        # Iterate over spin channels
-        for spin in energies[i]:
-            # energies[i][spin] is a list of arrays (one per band)
-            for band in energies[i][spin]:
-                # Determine color based on energy relative to VBM (0 eV)
-                # We check the mean energy of the band segment
-                if np.mean(band) <= 0:
-                    c = color_vb
-                else:
-                    c = color_cb
-                
-                ax.plot(d, band, color=c, lw=1.5, alpha=1.0)
+        # Handle different energy data structures
+        if isinstance(energies, dict):
+            # Structure: {'1': [seg1, seg2, ...], '-1': ...}
+            # Iterate over spins
+            for spin in energies:
+                # energies[spin] is a list of segments
+                # energies[spin][i] is the list of bands for segment i
+                for band in energies[spin][i]:
+                    # Determine color based on energy relative to VBM (0 eV)
+                    if np.mean(band) <= 0:
+                        c = color_vb
+                    else:
+                        c = color_cb
+                    ax.plot(d, band, color=c, lw=1.5, alpha=1.0)
+        else:
+            # Structure: [{'1': bands, ...}, {'1': bands, ...}] (List of dicts)
+            # Iterate over spin channels in this segment
+            for spin in energies[i]:
+                # energies[i][spin] is a list of arrays (one per band)
+                for band in energies[i][spin]:
+                    if np.mean(band) <= 0:
+                        c = color_vb
+                    else:
+                        c = color_cb
+                    ax.plot(d, band, color=c, lw=1.5, alpha=1.0)
 
     # Setup X-axis (K-path)
     ax.set_xticks(ticks['distance'])
@@ -108,4 +120,4 @@ def plot_band_structure(vasprun_path, kpoints_path=None, output="band_structure.
     plt.tight_layout()
     plt.savefig(output, dpi=dpi)
     plt.close(fig)
-    print(f"✅ Band structure saved to {output}")
+    # print(f"✅ Band structure saved to {output}") # Silent mode
