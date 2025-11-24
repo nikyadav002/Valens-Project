@@ -331,6 +331,7 @@ def plot_dos(dos, pdos, out="valens_dos.png",
         if el not in pdos:
             continue
             
+        # Assign unique color for each orbital contribution
         c = palette[i % len(palette)]
         
         if orb == 'total':
