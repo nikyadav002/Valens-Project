@@ -32,6 +32,13 @@ cd Valens-Project
 pip install -e .
 ```
 
+## Examples
+
+<p align="center">
+  <img src="valens/valens_dos.png" alt="DOS Plot Example" width="48%"/>
+  <img src="valens/valens_band.png" alt="Band Structure Example" width="45%"/>
+</p>
+
 ## Updating Valens
 
 To update to the latest version:
@@ -49,7 +56,9 @@ The main command is `valens`.
 <details>
 <summary><strong>Click to view detailed usage instructions</strong></summary>
 
-### Create Supercell
+<br>
+
+### 🧊 Create Supercell
 
 Generate a supercell from a POSCAR file:
 
@@ -70,9 +79,11 @@ valens supercell 3 3 1 -i POSCAR_primitive -o POSCAR_3x3x1
 - `-i`, `--input`: Input POSCAR file (default: `POSCAR`).
 - `-o`, `--output`: Output filename (default: `POSCAR_supercell`).
 
-### Band Structure
+---
 
-**1. Generate KPOINTS**
+### 📉 Band Structure
+
+#### 1. Generate KPOINTS
 
 Automatically generate a KPOINTS file with high-symmetry paths for band structure calculations.
 
@@ -90,7 +101,7 @@ valens band kpt-gen [options]
 valens band kpt-gen -n 60 -i POSCAR_relaxed -o KPOINTS_band
 ```
 
-**2. Plot Band Structure**
+#### 2. Plot Band Structure
 
 Plot the electronic band structure from `vasprun.xml`.
 
@@ -109,7 +120,9 @@ valens band [options]
 valens band --ylim -3 3 -o my_bands.png
 ```
 
-### Plot DOS
+---
+
+### 📊 Plot DOS
 
 ```bash
 valens dos [path/to/vasprun.xml] [options]
