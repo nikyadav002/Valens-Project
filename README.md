@@ -92,7 +92,7 @@ valens band kpt-gen -n 60 -i POSCAR_relaxed -o KPOINTS_band
 Plot the electronic band structure from `vasprun.xml`.
 
 ```bash
-valens band plot [options]
+valens band [options]
 ```
 
 **Options:**
@@ -103,7 +103,7 @@ valens band plot [options]
 
 **Example:**
 ```bash
-valens band plot --ylim -3 3 -o my_bands.png
+valens band --ylim -3 3 -o my_bands.png
 ```
 
 ### Plot DOS

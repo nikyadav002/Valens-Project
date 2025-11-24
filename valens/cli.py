@@ -501,21 +501,21 @@ def main():
 
     # --- Band Subcommand ---
     band_parser = subparsers.add_parser("band", help="Band structure utilities")
+    
+    # Add plotting arguments directly to 'band' parser
+    band_parser.add_argument("filepath", nargs="?", help="Path to vasprun.xml or directory (optional)")
+    band_parser.add_argument("--vasprun", help="Explicit path to vasprun.xml")
+    band_parser.add_argument("--kpoints", help="Path to KPOINTS file (for labels)")
+    band_parser.add_argument("--ylim", nargs=2, type=float, help="Energy range (min max)")
+    band_parser.add_argument("-o", "--output", default="band_structure.png", help="Output filename")
+    band_parser.add_argument("--font", default="Arial", help="Font family")
+
     band_subparsers = band_parser.add_subparsers(dest="band_command", help="Band structure commands")
     
     kptgen_parser = band_subparsers.add_parser("kpt-gen", help="Generate KPOINTS for band structure")
     kptgen_parser.add_argument("-i", "--input", default="POSCAR", help="Input POSCAR file (default: POSCAR)")
     kptgen_parser.add_argument("-n", "--npoints", type=int, default=40, help="Points per segment (default: 40)")
     kptgen_parser.add_argument("-o", "--output", default="KPOINTS", help="Output filename (default: KPOINTS)")
-
-    # --- Band Plot Subcommand ---
-    band_plot_parser = band_subparsers.add_parser("plot", help="Plot electronic band structure")
-    band_plot_parser.add_argument("filepath", nargs="?", help="Path to vasprun.xml or directory (optional)")
-    band_plot_parser.add_argument("--vasprun", help="Explicit path to vasprun.xml")
-    band_plot_parser.add_argument("--kpoints", help="Path to KPOINTS file (for labels)")
-    band_plot_parser.add_argument("--ylim", nargs=2, type=float, help="Energy range (min max)")
-    band_plot_parser.add_argument("-o", "--output", default="band_structure.png", help="Output filename")
-    band_plot_parser.add_argument("--font", default="Arial", help="Font family")
 
     args = parser.parse_args()
 
@@ -560,7 +560,8 @@ def main():
             except Exception as e:
                 print(f"❌ Error: {e}")
                 sys.exit(1)
-        elif args.band_command == "plot":
+        elif args.band_command == "plot" or args.band_command is None:
+             # Default behavior for 'valens band' is plotting
             try:
                 # Determine input path: --vasprun > positional > current dir
                 target_path = args.vasprun or args.filepath or "."
