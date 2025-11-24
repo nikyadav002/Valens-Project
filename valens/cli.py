@@ -381,9 +381,8 @@ def plot_dos(dos, pdos, out="valens_dos.png",
         # Always plot the line (make it visible)
         line.set_alpha(1.0)
         
-        # Apply gradient fill if significant enough (optional, but looks better)
-        if max_y >= threshold * 0.5:  # Lower threshold for gradient
-             gradient_fill(dos.energies, y_data, ax=ax, color=c, alpha=0.9)
+        # Always apply gradient fill for visible lines
+        gradient_fill(dos.energies, y_data, ax=ax, color=c, alpha=0.9)
         
         # Only add to legend if above main threshold
         if max_y >= threshold:
