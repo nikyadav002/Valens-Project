@@ -303,12 +303,11 @@ def plot_dos(dos, pdos, out="valens_dos.png",
         ax.axvline(0, color="k", lw=0.8, ls="--", alpha=0.7)
 
     # Color palette for elements
-    # Expanded pastel color palette for better distinction
+    # Expanded color palette for better distinction
     palette = [
-        "#FFB3BA", "#FFDFBA", "#FFFFBA", "#BAFFC9", "#BAE1FF", # Pastels
-        "#A0C4FF", "#BDB2FF", "#FFC6FF", "#FDFFB6", "#CAFFBF", # More pastels
-        "#9BF6FF", "#FFADAD", "#FFD6A5", "#E4C1F9", "#D0F4DE",
-        "#FCF6BD", "#C0FDFF", "#FFC8DD"
+        "#4b0082", "#e63946", "#2a9d8f", "#ffb703", "#6a994e", "#8e44ad", 
+        "#118ab2", "#d62828", "#f4a261", "#003049", "#023e8a", "#0077b6",
+        "#0096c7", "#00b4d8", "#48cae4", "#90e0ef", "#ade8f4", "#caf0f8"
     ]
     lines, labels = [], []
     
