@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / Packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# VASP Data (optional, but good to ignore large data files if in repo)
+vasprun.xml
+CHG
+CHGCAR
+DOSCAR
+PROCAR
+WAVECAR
+OUTCAR
+
+# IDEs
+.vscode/
+.idea/
+*.swp
