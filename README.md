@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="valyte/Logo.png" alt="Valyte Logo" width="400"/>
+  <img src="valyte/Logo.png" alt="Valyte Logo" width="100%"/>
 </p>
 
 # Valyte
