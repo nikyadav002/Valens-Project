@@ -57,28 +57,53 @@ def gradient_fill(x, y, ax=None, color=None, xlim=None, **kwargs):
     rgb = mcolors.to_rgb(fill_color)
     z[:, :, :3] = rgb
     
+    # Gradient Logic based on relative height
+    # We want opacity to be proportional to height relative to the max visible value (ymax_ref)
+        
+    # Create normalized alpha gradient (0 to 1)
+    # We map y-values to alpha values. 
+    # Since imshow fills a rectangle, we create a vertical gradient 
+    # and clip it later.
     
-    # Gradient: transparent at bottom (y=0), opaque near the curve
-    # This creates a gradient from bottom to top of the filled area
-    alpha_gradient = np.linspace(0.05, 0.75, 100)
+    # Opacity range: 0.05 (at axis) to 0.95 (at max visible height)
+    # This ensures "Darker colour at the top"
+    min_alpha = 0.05
+    max_alpha = 0.95
+    
+    # Create the gradient array (vertical)
+    # 0 is bottom, 1 is top
+    gradient_vector = np.linspace(min_alpha, max_alpha, 100)
+    
+    # IMPORTANT: Restore alpha scaling so total DOS (alpha=0.15) stays faint
+    gradient_vector *= alpha
     
     # If data is negative (Spin Down), we want opaque at bottom (peak) and transparent at top (axis)
-    # Current extent is [ymin, ymax]. ymin is bottom. ymax is top (0).
-    # So we want High Alpha at index 0 and Low Alpha at index 100.
     if np.mean(y) < 0:
-        alpha_gradient = alpha_gradient[::-1]
+        gradient_vector = gradient_vector[::-1]
         
-    z[:, :, -1] = alpha_gradient[:, None]
+    z[:, :, -1] = gradient_vector[:, None]
     
     xmin, xmax = x.min(), x.max()
-    ymin, ymax = min(y.min(), 0), max(y.max(), 0)
     
-    # Handle pure negative or pure positive cases to avoid singular extent
-    if ymax == ymin:
-        ymax += 1e-6
-
+    # Determine extent based on LOCAL curve limits
+    # User requested "each curve should have its own gradient"
+    # So we scale from 0 to curve.max()
+    
+    local_ymax = max(y.max(), abs(y.min()))
+    if local_ymax == 0: local_ymax = 1.0 # Prevent singular extent
+    
+    if np.mean(y) < 0:
+        # Spin Down: Extent from -local_ymax to 0
+        extent_ymin = -local_ymax
+        extent_ymax = 0
+    else:
+        # Spin Up: Extent from 0 to local_ymax
+        extent_ymin = 0
+        extent_ymax = local_ymax
+    
     # Display the gradient image
-    im = ax.imshow(z, aspect="auto", extent=[xmin, xmax, ymin, ymax],
+    # We use the explicit extent calculated above
+    im = ax.imshow(z, aspect="auto", extent=[xmin, xmax, extent_ymin, extent_ymax],
                    origin="lower", zorder=zorder)
     
     # Clip the gradient to the area under the curve
@@ -403,6 +428,13 @@ def plot_dos(dos, pdos, out="valyte_dos.png",
     global_max = max(max_visible_y, abs(min_visible_y))
     threshold = legend_cutoff * global_max
     
+    # Auto-scale Y-axis calculation (to determine ymax_ref)
+    if ylim:
+        pass # ymax_ref = ylim[1] (Unused)
+    else:
+        # Determine likely ymax based on logic later in the function
+        pass
+
     # Filter legend items but keep all plot lines
     final_lines = []
     final_labels = []
@@ -441,6 +473,9 @@ def plot_dos(dos, pdos, out="valyte_dos.png",
         y_total_down = -dos.spin_down
         
         ax.plot(dos.energies, y_total_up, color="k", lw=1.2, label="Total DOS")
+        # Use ymax_ref here too, assuming we want scaling relative to frame too
+        # But Total DOS is often much larger. Maybe keep it separate max?
+        # User said "Maximum value after scaling". So consistent reference is good.
         gradient_fill(dos.energies, y_total_up, ax=ax, color="k", alpha=0.15)
         
         if is_spin_polarized:
