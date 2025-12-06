@@ -298,24 +298,24 @@ def plot_dos(dos, pdos, out="valyte_dos.png",
     # Expanded color palette for better distinction
     # Reordered to maximize contrast between consecutive items
     palette = [
-        "#E63946", # Red (Warm)
-        "#023E8A", # Royal Blue (Cool)
-        "#FB8500", # Orange (Warm)
-        "#007F5F", # Deep Green (Cool)
-        "#D00000", # Crimson (Warm)
-        "#4CC9F0", # Sky Blue (Cool)
-        "#7209B7", # Purple (Warm-ish)
-        "#80B918", # Lime Green (Cool)
-        "#F72585", # Pink (Warm)
-        "#4895EF", # Light Blue (Cool)
-        "#9D0208", # Dark Red (Warm)
-        "#480CA8", # Indigo (Cool)
-        "#FFB703", # Yellow/Gold (Warm)
-        "#3A0CA3", # Dark Blue (Cool)
-        "#641220", # Maroon (Warm)
-        "#560BAD", # Violet (Cool)
-        "#F15BB5", # Rose (Warm)
-        "#3F37C9"  # Blue Violet (Cool)
+        "#4b0082", # Indigo
+        "#0096c7", # Cyan
+        "#e63946", # Red
+        "#023e8a", # Royal Blue
+        "#ffb703", # Yellow
+        "#2a9d8f", # Teal
+        "#8e44ad", # Purple
+        "#118ab2", # Light Blue
+        "#d62828", # Dark Red
+        "#00b4d8", # Sky Blue
+        "#f4a261", # Orange
+        "#003049", # Dark Blue
+        "#6a994e", # Green
+        "#48cae4", # Light Cyan
+        "#0077b6", # Blue
+        "#90e0ef", # Pale Blue
+        "#ade8f4", # Very Pale Blue
+        "#caf0f8"  # White Blue
     ]
     lines, labels = [], []
     
